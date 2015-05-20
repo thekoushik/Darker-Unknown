@@ -1,0 +1,67 @@
+'game maker algo of movement
+    Private Function GoToTargetOutside() As Short
+        'double argument0=m.dspeed,argument1=m.tx,argument2=m.ty;
+        'if (Speed>10) argument0=10;
+        ' Test whether we are on the goal
+        If Reached() Then Return 1
+        Dim w As Double = speed * 1.2
+        Dim b As Boolean = LineOfSight(x, y, curTargetPt.X, curTargetPt.Y)
+        Dim checkspot As Boolean = RectFree(curTargetPt.X - 5, curTargetPt.Y - 5, 10, 10)
+        If checkspot = False Then ' Something is in the position, we may not be able to get there
+            If b Then ' Definitely blocked
+                If Math.Abs(x - curTargetPt.X) < w AndAlso Math.Abs(y - curTargetPt.Y) < w Then Return 1
+            End If
+        End If
+        ' Test whether we are close to the goal, if so, move there immediately
+        If targetDist <= speed AndAlso b Then
+            If checkspot Then
+                myangle = targetAngle
+                x = curTargetPt.X : y = curTargetPt.Y
+            End If
+            Return 1
+        End If
+        ' Compute the potential useful direction to try in order of usefullness.
+        ' The directions we test must lie not too far away from the current 
+        ' direction and are preferably directed as much as possible towards the goal
+        Dim __maxrot As Short = 60    ' maximal amount to rotate in a step. Can be changed
+        '__stepsize = 10;  // size of the steps to take. Can be changed
+        Dim __try As New List(Of Double)
+        For i As Short = 0 To 180 Step 10
+            ' try a counterclockwise direction
+            Dim __dir As Short = (targetAngle - i + 360) Mod 360   ' to get it in the range 0-360
+            Dim __dif As Short = (myangle - __dir + 360) Mod 360
+            If __dif <= __maxrot OrElse __dif >= 360 - __maxrot Then ' add to the array of tries
+                __try.Add(__dir)
+            End If
+            ' try a clockwise direction
+            __dir = (targetAngle + i + 360) Mod 360   ' to get it in the range 0-360
+            __dif = (myangle - __dir + 360) Mod 360
+            If __dif <= __maxrot OrElse __dif >= 360 - __maxrot Then ' add to the array of tries
+                __try.Add(__dir)
+            End If
+        Next
+        ' Now we try the directions in the array __try
+        ' For each direction we look a bit ahead to see whether it will lead to
+        ' a collision. If not, we take that direction for the motion
+        ' Note that we temporaily set the speed to argument0 such that we can
+        ' use hspeed and vspeed to determine the new position
+        'Dim __ahead As Short = 1   ' number of steps we look ahead for collisions(can be changed)
+        'm.setspeed(argument0)
+        'for i As Short = 0 to i < __trynumb; i += 1){
+        For Each d As Double In __try
+            ' try moving a bit in the direction
+            Dim sx As Double, sy As Double
+            Force(speed, d, speedX, speedY)
+            If RectFree(x + sx - 5, y + sy - 5, 10, 10) Then ' andalso circollide(m.nx,m.ny)==-1){
+                'Force(speed, d, speedX, speedY)
+                Go(True) '__ahead * speedX, __ahead * speedY) 'm.move();
+                myangle = d
+                'm.setspeed(0);
+                Return 2
+            End If
+        Next
+        speedX = 0 : speedY = 0
+        Go(True)
+        ' If we did not succeed a local minima was reached and the instance gets stuck
+        Return 0
+    End Function

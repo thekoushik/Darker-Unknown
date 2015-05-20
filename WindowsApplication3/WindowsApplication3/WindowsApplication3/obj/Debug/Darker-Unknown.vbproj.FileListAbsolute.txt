@@ -1,0 +1,5 @@
+C:\Users\didi\Desktop\WindowsApplication3\WindowsApplication3\WindowsApplication3\bin\Debug\WindowsApplication3.exe.config
+C:\Users\didi\Desktop\WindowsApplication3\WindowsApplication3\WindowsApplication3\obj\Debug\WindowsApplication3.exe
+C:\Users\didi\Desktop\WindowsApplication3\WindowsApplication3\WindowsApplication3\obj\Debug\WindowsApplication3.xml
+C:\Users\didi\Desktop\WindowsApplication3\WindowsApplication3\WindowsApplication3\obj\Debug\WindowsApplication3.pdb
+C:\Users\didi\Desktop\WindowsApplication3\WindowsApplication3\WindowsApplication3\bin\Debug\Darker-Unknown.exe.config
